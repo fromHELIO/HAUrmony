@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
-import 'screens/dashboard.dart';
-import 'screens/tickets.dart';
-import 'screens/users.dart';
-import 'screens/reports.dart';
-import 'screens/menu.dart';
+import 'screens/launcher_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/signup_choice_screen.dart';
+import 'screens/signup_angelite_screen.dart';
+import 'screens/signup_non_angelite_screen.dart';
+import 'screens/forgot_password_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/zone_selection_screen.dart';
+import 'screens/my_tickets_screen.dart';
+import 'screens/profile_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
-  runApp(MyApp());
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://qfgdezwllzrtxbilnrqh.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZ2RlendsbHpydHhiaWxucnFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5ODkzNjQsImV4cCI6MjA3NTU2NTM2NH0.iDmZeNR7JkXlj4qEYKvUmyJtK21fdxjZ2ch7skXrtKQ',
+  );
+  runApp(const HAUrmonyApp());
 }
 
-class MyApp extends StatelessWidget {
+class HAUrmonyApp extends StatelessWidget {
+  const HAUrmonyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,52 +31,21 @@ class MyApp extends StatelessWidget {
       title: 'HAUrmony',
       theme: ThemeData(
         primarySwatch: Colors.red,
-        fontFamily: 'Roboto',
       ),
-      home: MainPage(),
-    );
-  }
-}
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LauncherScreen(),
+        '/login': (context) => LoginScreen(),
+        '/signup_choice': (context) => SignupChoiceScreen(),
+        '/signup_angelite': (context) => SignupAngeliteScreen(),
+        '/signup_non_angelite': (context) => SignupNonAngeliteScreen(),
+        '/forgot_password': (context) => ForgotPasswordScreen(),
+        '/home_screen': (context) => HomeScreen(),
+        '/zone_selection': (context) => ZoneSelectionScreen(),
+        '/my_tickets': (context) => MyTicketsScreen(),
+        '/profile': (c) => const ProfileScreen(),
 
-class MainPage extends StatefulWidget {
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _screens = [
-    DashboardScreen(),
-    TicketsScreen(),
-    UsersScreen(),
-    ReportsScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: MenuScreen(),
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
-          BottomNavigationBarItem(icon: Icon(Icons.confirmation_num), label: "Tickets"),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: "Users"),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "Reports"),
-        ],
-      ),
+      },
     );
   }
 }
