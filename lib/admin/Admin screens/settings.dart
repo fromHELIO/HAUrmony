@@ -195,75 +195,77 @@ class _SettingsScreenState extends State<SettingsScreen> {
         onMenuTap: () => Scaffold.of(context).openDrawer(),
       ),
       drawer: MenuScreen(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            const Text("Zone Set Up",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            ...capacities.keys.map(
-              (zone) =>
-                  _buildCapacityBox(zone, capacities[zone]!, zoneColors[zone]!),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-                side: const BorderSide(color: Colors.grey),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              const Text("Zone Set Up",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              ...capacities.keys.map(
+                (zone) =>
+                    _buildCapacityBox(zone, capacities[zone]!, zoneColors[zone]!),
               ),
-              onPressed: () => _addOrEditZoneDialog(),
-              child: const Text("+ Add Zone"),
-            ),
-            const SizedBox(height: 20),
-            const Text("Ticket Pricing",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            ...prices.keys.map(
-              (zone) => _buildPriceBox(zone, prices[zone]!, zoneColors[zone]!),
-            ),
-            const SizedBox(height: 20),
-            const Text("Rules & Policies",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            CheckboxListTile(
-              title: RichText(
-                text: const TextSpan(
-                  text: "Angelites users: ",
-                  style: TextStyle(color: Colors.black),
-                  children: [
-                    TextSpan(
-                      text: "1 discounted ticket max",
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ],
+              const SizedBox(height: 8),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  side: const BorderSide(color: Colors.grey),
                 ),
+                onPressed: () => _addOrEditZoneDialog(),
+                child: const Text("+ Add Zone"),
               ),
-              value: discountWithID,
-              onChanged: (val) => setState(() => discountWithID = val!),
-            ),
-            CheckboxListTile(
-              title: const Text("Allow voucher PDF download"),
-              value: allowVoucher,
-              onChanged: (val) => setState(() => allowVoucher = val!),
-            ),
-            CheckboxListTile(
-              title: const Text("Enable Payment Gateway"),
-              value: enableGateway,
-              onChanged: (val) => setState(() => enableGateway = val!),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.save),
-              label: const Text("Save Changes"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
+              const SizedBox(height: 20),
+              const Text("Ticket Pricing",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              ...prices.keys.map(
+                (zone) => _buildPriceBox(zone, prices[zone]!, zoneColors[zone]!),
               ),
-              onPressed: _saveChanges,
-            ),
-          ],
+              const SizedBox(height: 20),
+              const Text("Rules & Policies",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              CheckboxListTile(
+                title: RichText(
+                  text: const TextSpan(
+                    text: "Angelites users: ",
+                    style: TextStyle(color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: "1 discounted ticket max",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
+                value: discountWithID,
+                onChanged: (val) => setState(() => discountWithID = val!),
+              ),
+              CheckboxListTile(
+                title: const Text("Allow voucher PDF download"),
+                value: allowVoucher,
+                onChanged: (val) => setState(() => allowVoucher = val!),
+              ),
+              CheckboxListTile(
+                title: const Text("Enable Payment Gateway"),
+                value: enableGateway,
+                onChanged: (val) => setState(() => enableGateway = val!),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.save),
+                label: const Text("Save Changes"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                ),
+                onPressed: _saveChanges,
+              ),
+            ],
+          ),
         ),
       ),
     );

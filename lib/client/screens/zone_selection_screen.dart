@@ -41,99 +41,101 @@ class _ZoneSelectionScreenState extends State<ZoneSelectionScreen> {
       // attach drawer to the right so hamburger opens it
       endDrawer: const AppDrawer(),
       appBar: appBarWithHamburger(context, showBack: true, openEndDrawer: true), // REPLACED AppBar
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: SizedBox(
-                height: 200,
-                child: Row(
-                  children: [
-                    _zoneTopCard('ZONE A'),
-                    _verticalDivider(),
-                    _zoneTopCard('ZONE B'),
-                    _verticalDivider(),
-                    _zoneTopCard('ZONE C'),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Text("Select your zone!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 4),
-            const Text("Choose where you'd like to enjoy the concert.", style: TextStyle(fontSize: 14, color: Colors.black54)),
-            const SizedBox(height: 16),
-            _zoneSelector('Zone A', kLogoColor, zoneA, (v) => setState(() => zoneA = v)),
-            const SizedBox(height: 8),
-            _zoneSelector('Zone B', ticketYellow, zoneB, (v) => setState(() => zoneB = v)),
-            const SizedBox(height: 8),
-            _zoneSelector('Zone C', Colors.grey.shade400, zoneC, (v) => setState(() => zoneC = v)),
-            const SizedBox(height: 24),
-            if (errorMessage != null)
-              Padding(padding: const EdgeInsets.only(bottom: 8.0), child: Text(errorMessage!, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              const Text("Total:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Text("₱ $total", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            ]),
-            const SizedBox(height: 16),
-            Row(children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ticketYellow,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 4,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: SizedBox(
+                  height: 200,
+                  child: Row(
+                    children: [
+                      _zoneTopCard('ZONE A'),
+                      _verticalDivider(),
+                      _zoneTopCard('ZONE B'),
+                      _verticalDivider(),
+                      _zoneTopCard('ZONE C'),
+                    ],
                   ),
-                  onPressed: isLoading
-                      ? null
-                      : () {
-                          if (zoneA + zoneB + zoneC == 0) {
-                            setState(() => errorMessage = "Please select at least one ticket.");
-                            return;
-                          }
-                          // navigate to the separate OrderSummaryScreen file and pass quantities
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OrderSummaryScreen(
-                                zoneAQty: zoneA,
-                                zoneBQty: zoneB,
-                                zoneCQty: zoneC,
-                              ),
-                            ),
-                          );
-                        },
-                  child: isLoading
-                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : const Text('CHECK OUT', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, letterSpacing: 2, color: Colors.white)),
                 ),
               ),
-              const SizedBox(width: 12),
-              IconButton(icon: const Icon(Icons.refresh, color: kLogoColor), tooltip: "Reset selection", onPressed: isLoading ? null : _resetSelection),
-            ]),
-            const SizedBox(height: 24),
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(children: [
-                  const Icon(Icons.info_outline, color: kLogoColor, size: 32),
-                  const SizedBox(width: 12),
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-                    Text("Zone Info", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    SizedBox(height: 4),
-                    Text("Zone A is closest to the stage. Zone B is middle. Zone C is farthest. All zones are ₱300 per ticket.", style: TextStyle(fontSize: 13, color: Colors.black87)),
-                  ])),
-                ]),
+              const SizedBox(height: 24),
+              const Text("Select your zone!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              const Text("Choose where you'd like to enjoy the concert.", style: TextStyle(fontSize: 14, color: Colors.black54)),
+              const SizedBox(height: 16),
+              _zoneSelector('Zone A', kLogoColor, zoneA, (v) => setState(() => zoneA = v)),
+              const SizedBox(height: 8),
+              _zoneSelector('Zone B', ticketYellow, zoneB, (v) => setState(() => zoneB = v)),
+              const SizedBox(height: 8),
+              _zoneSelector('Zone C', Colors.grey.shade400, zoneC, (v) => setState(() => zoneC = v)),
+              const SizedBox(height: 24),
+              if (errorMessage != null)
+                Padding(padding: const EdgeInsets.only(bottom: 8.0), child: Text(errorMessage!, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                const Text("Total:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text("₱ $total", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              ]),
+              const SizedBox(height: 16),
+              Row(children: [
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ticketYellow,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 4,
+                    ),
+                    onPressed: isLoading
+                        ? null
+                        : () {
+                            if (zoneA + zoneB + zoneC == 0) {
+                              setState(() => errorMessage = "Please select at least one ticket.");
+                              return;
+                            }
+                            // navigate to the separate OrderSummaryScreen file and pass quantities
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderSummaryScreen(
+                                  zoneAQty: zoneA,
+                                  zoneBQty: zoneB,
+                                  zoneCQty: zoneC,
+                                ),
+                              ),
+                            );
+                          },
+                    child: isLoading
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : const Text('CHECK OUT', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, letterSpacing: 2, color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                IconButton(icon: const Icon(Icons.refresh, color: kLogoColor), tooltip: "Reset selection", onPressed: isLoading ? null : _resetSelection),
+              ]),
+              const SizedBox(height: 24),
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(children: [
+                    const Icon(Icons.info_outline, color: kLogoColor, size: 32),
+                    const SizedBox(width: 12),
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+                      Text("Zone Info", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      SizedBox(height: 4),
+                      Text("Zone A is closest to the stage. Zone B is middle. Zone C is farthest. All zones are ₱300 per ticket.", style: TextStyle(fontSize: 13, color: Colors.black87)),
+                    ])),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

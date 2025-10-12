@@ -36,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _emailCtrl = TextEditingController(text: p.email);
     _contactCtrl = TextEditingController(text: p.contact);
     initials = p.initials;
+    colorValue = p.colorValue;
   }
 
   @override
@@ -54,6 +55,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         email: _emailCtrl.text.trim(),
         contact: _contactCtrl.text.trim(), // contact saved
         initials: initials,
+        colorValue: colorValue,
+        avatarPath: '', // keep existing avatar logic or update later
       ),
     );
     Navigator.pop(context);
@@ -130,50 +133,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         title: const Text('My Profile', style: TextStyle(color: logoRed, fontWeight: FontWeight.bold)),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Center(child: GestureDetector(onTap: _pickAvatar, child: avatar)),
-              const SizedBox(height: 12),
-              Center(child: TextButton(onPressed: _pickAvatar, child: const Text('Change Avatar'))),
-              const SizedBox(height: 18),
-              TextFormField(
-                controller: _nameCtrl,
-                decoration: const InputDecoration(labelText: 'Full Name'),
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter name' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _emailCtrl,
-                decoration: const InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) return 'Enter email';
-                  final re = RegExp(r'^[\w\.\-]+@([\w\-]+\.)+[A-Za-z]{2,}$');
-                  if (!re.hasMatch(v.trim())) return 'Enter a valid email';
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              // Contact field added
-              TextFormField(
-                controller: _contactCtrl,
-                decoration: const InputDecoration(labelText: 'Contact Number'),
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 18),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: logoRed),
-                  onPressed: _save,
-                  child: const Text('SAVE', style: TextStyle(color: Colors.white)),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                Center(child: GestureDetector(onTap: _pickAvatar, child: avatar)),
+                const SizedBox(height: 12),
+                Center(child: TextButton(onPressed: _pickAvatar, child: const Text('Change Avatar'))),
+                const SizedBox(height: 18),
+                TextFormField(
+                  controller: _nameCtrl,
+                  decoration: const InputDecoration(labelText: 'Full Name'),
+                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter name' : null,
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _emailCtrl,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return 'Enter email';
+                    final re = RegExp(r'^[\w\.\-]+@([\w\-]+\.)+[A-Za-z]{2,}$');
+                    if (!re.hasMatch(v.trim())) return 'Enter a valid email';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                // Contact field added
+                TextFormField(
+                  controller: _contactCtrl,
+                  decoration: const InputDecoration(labelText: 'Contact Number'),
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 18),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: logoRed),
+                    onPressed: _save,
+                    child: const Text('SAVE', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

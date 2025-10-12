@@ -112,57 +112,59 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarWithHamburger(context, showBack: true, openEndDrawer: false), // REPLACED AppBar
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              const Text('Hello, Angelite!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              const Text('Sign up with your HAU email to get started.'),
-              const SizedBox(height: 24),
-              TextFormField(controller: firstNameController, decoration: const InputDecoration(labelText: 'First Name'), validator: _requiredValidator),
-              const SizedBox(height: 12),
-              TextFormField(controller: lastNameController, decoration: const InputDecoration(labelText: 'Last Name'), validator: _requiredValidator),
-              const SizedBox(height: 12),
-              TextFormField(controller: contactController, decoration: const InputDecoration(labelText: 'Contact Number')),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'HAU Email (@student.hau.edu.ph)'),
-                keyboardType: TextInputType.emailAddress,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: _hauEmailValidator,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(controller: studentNumberController, decoration: const InputDecoration(labelText: 'Student Number')),
-              const SizedBox(height: 12),
-              TextFormField(controller: passwordController, obscureText: true, decoration: const InputDecoration(labelText: 'Password'), validator: _passwordValidator),
-              const SizedBox(height: 12),
-              TextFormField(controller: confirmPasswordController, obscureText: true, decoration: const InputDecoration(labelText: 'Confirm Password'), validator: _confirmPasswordValidator),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kLogoColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 2,
-                  ),
-                  onPressed: _submit,
-                  child: const Text(
-                    'SIGN UP',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                const Text('Hello, Angelite!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                const Text('Sign up with your HAU email to get started.'),
+                const SizedBox(height: 24),
+                TextFormField(controller: firstNameController, decoration: const InputDecoration(labelText: 'First Name'), validator: _requiredValidator),
+                const SizedBox(height: 12),
+                TextFormField(controller: lastNameController, decoration: const InputDecoration(labelText: 'Last Name'), validator: _requiredValidator),
+                const SizedBox(height: 12),
+                TextFormField(controller: contactController, decoration: const InputDecoration(labelText: 'Contact Number')),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(labelText: 'HAU Email (@student.hau.edu.ph)'),
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: _hauEmailValidator,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(controller: studentNumberController, decoration: const InputDecoration(labelText: 'Student Number')),
+                const SizedBox(height: 12),
+                TextFormField(controller: passwordController, obscureText: true, decoration: const InputDecoration(labelText: 'Password'), validator: _passwordValidator),
+                const SizedBox(height: 12),
+                TextFormField(controller: confirmPasswordController, obscureText: true, decoration: const InputDecoration(labelText: 'Confirm Password'), validator: _confirmPasswordValidator),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kLogoColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 2,
+                    ),
+                    onPressed: _submit,
+                    child: const Text(
+                      'SIGN UP',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

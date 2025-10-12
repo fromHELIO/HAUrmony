@@ -14,50 +14,52 @@ class DashboardScreen extends StatelessWidget {
         onMenuTap: () => Scaffold.of(context).openDrawer(),
       ),
       drawer: MenuScreen(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // ---- Top Stat Cards ----
-            Row(
-              children: [
-                Expanded(
-                  child: _statCard(
-                    title: "Ticket Sold Today",
-                    value: "999 / 1500",
-                    color: const Color(0xFFE09B1E),
-                    showArrow: true,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ---- Top Stat Cards ----
+              Row(
+                children: [
+                  Expanded(
+                    child: _statCard(
+                      title: "Ticket Sold Today",
+                      value: "999 / 1500",
+                      color: const Color(0xFFE09B1E),
+                      showArrow: true,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _statCard(
-                    title: "Total Revenue",
-                    value: "₱ 8000.23",
-                    color: const Color(0xFFB33A2F),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _statCard(
+                      title: "Total Revenue",
+                      value: "₱ 8000.23",
+                      color: const Color(0xFFB33A2F),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // ---- Zone Cards ----
-            _zoneCard("Zone A", "180 / 200", const Color(0xFF941E1E)),
-            _zoneCard("Zone B", "180 / 200", const Color(0xFFE09B1E)),
-            _zoneCard("Zone C", "180 / 200", const Color(0xFFD3B9A3)),
-            const SizedBox(height: 24),
-
-            // ---- Circular indicators ----
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                _CirclePercent(label: "Zone A", percent: 0.75, color: Color(0xFF941E1E)),
-                _CirclePercent(label: "Zone B", percent: 0.75, color: Color(0xFFE09B1E)),
-                _CirclePercent(label: "Zone C", percent: 0.75, color: Color(0xFFD3B9A3)),
-              ],
-            ),
-          ],
+                ],
+              ),
+              const SizedBox(height: 24),
+        
+              // ---- Zone Cards ----
+              _zoneCard("Zone A", "180 / 200", const Color(0xFF941E1E)),
+              _zoneCard("Zone B", "180 / 200", const Color(0xFFE09B1E)),
+              _zoneCard("Zone C", "180 / 200", const Color(0xFFD3B9A3)),
+              const SizedBox(height: 24),
+        
+              // ---- Circular indicators ----
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const [
+                  _CirclePercent(label: "Zone A", percent: 0.75, color: Color(0xFF941E1E)),
+                  _CirclePercent(label: "Zone B", percent: 0.75, color: Color(0xFFE09B1E)),
+                  _CirclePercent(label: "Zone C", percent: 0.75, color: Color(0xFFD3B9A3)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

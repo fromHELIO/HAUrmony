@@ -15,34 +15,36 @@ class MyTicketsScreen extends StatelessWidget {
       // attach drawer to the right so the hamburger opens it
       endDrawer: const AppDrawer(),
       appBar: appBarWithHamburger(context, showBack: true, openEndDrawer: true), // REPLACED AppBar
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("My Tickets", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 4),
-            const Text("View and download your tickets anytime.", style: TextStyle(fontSize: 14, color: Colors.black54)),
-            const SizedBox(height: 24),
-            Expanded(
-              child: ValueListenableBuilder<List<Ticket>>(
-                valueListenable: TicketRepository.instance.ticketsNotifier,
-                builder: (context, tickets, _) {
-                  if (tickets.isEmpty) {
-                    return const Center(child: Text("No tickets yet. Tap + to add."));
-                  }
-                  return ListView.separated(
-                    itemCount: tickets.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final t = tickets[index];
-                      return _ticketCard(context, t);
-                    },
-                  );
-                },
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("My Tickets", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              const Text("View and download your tickets anytime.", style: TextStyle(fontSize: 14, color: Colors.black54)),
+              const SizedBox(height: 24),
+              Expanded(
+                child: ValueListenableBuilder<List<Ticket>>(
+                  valueListenable: TicketRepository.instance.ticketsNotifier,
+                  builder: (context, tickets, _) {
+                    if (tickets.isEmpty) {
+                      return const Center(child: Text("No tickets yet. Tap + to add."));
+                    }
+                    return ListView.separated(
+                      itemCount: tickets.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final t = tickets[index];
+                        return _ticketCard(context, t);
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
