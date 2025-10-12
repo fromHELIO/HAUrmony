@@ -35,36 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  // Future<void> _login() async {
-  //   if (!_formKey.currentState!.validate()) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Please input a valid Email and Password')),
-  //     );
-  //     return;
-  //   }
-
-  //   final email = emailController.text.trim();
-  //   final password = passwordController.text.trim();
-
-  //   setState(() => _isLoading = true);
-
-  //   final user = await MockAuthService.login(email, password);
-
-  //   setState(() => _isLoading = false);
-
-  //   if (user != null) {
-  //     if (user.role == 'admin') {
-  //       Navigator.pushReplacementNamed(context, '/admin');
-  //     } else {
-  //       Navigator.pushReplacementNamed(context, '/home_screen');
-  //     }
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text("Invalid email or password")),
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
