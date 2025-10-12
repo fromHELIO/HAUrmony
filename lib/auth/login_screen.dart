@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../client/constants.dart'; // added
+import '../client/constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // added
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,7 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -25,8 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _emailValidator(String? v) {
     if (v == null || v.trim().isEmpty) return 'Enter your email';
     final email = v.trim();
-    final emailRegex = RegExp(r'^[\w\.\-]+@(gmail\.com|student\.hau\.edu\.ph)$');
-    if (!emailRegex.hasMatch(email)) return 'Enter a valid email (e.g. @gmail.com or @student.hau.edu.ph)';
+    final emailRegex = RegExp(r'^[\w\.\-\_]+@[\w\-\.]+\.[a-zA-Z]{2,}$');
+    if (!emailRegex.hasMatch(email)) return 'Please enter a valid email address.';
     return null;
   }
 
@@ -35,35 +35,35 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please input a valid Email and Password')),
-      );
-      return;
-    }
+  // Future<void> _login() async {
+  //   if (!_formKey.currentState!.validate()) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Please input a valid Email and Password')),
+  //     );
+  //     return;
+  //   }
 
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
+  //   final email = emailController.text.trim();
+  //   final password = passwordController.text.trim();
 
-    setState(() => _isLoading = true);
+  //   setState(() => _isLoading = true);
 
-    final user = await MockAuthService.login(email, password);
+  //   final user = await MockAuthService.login(email, password);
 
-    setState(() => _isLoading = false);
+  //   setState(() => _isLoading = false);
 
-    if (user != null) {
-      if (user.role == 'admin') {
-        Navigator.pushReplacementNamed(context, '/admin');
-      } else {
-        Navigator.pushReplacementNamed(context, '/home_screen');
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid email or password")),
-      );
-    }
-  }
+  //   if (user != null) {
+  //     if (user.role == 'admin') {
+  //       Navigator.pushReplacementNamed(context, '/admin');
+  //     } else {
+  //       Navigator.pushReplacementNamed(context, '/home_screen');
+  //     }
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("Invalid email or password")),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -153,14 +153,70 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 2,
                   ),
-                  onPressed: _isLoading ? null : _login,
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 18,
-                          width: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                        )
-                      : const Text(
+                  onPressed: () async {
+                    if (!_formKey.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please input a valid Email and Password.')),
+                      );
+                      return;
+                    }
+
+                    final email = emailController.text.trim();
+                    final password = passwordController.text.trim();
+                    final supabase = Supabase.instance.client;
+
+                    try {
+                      final response = await supabase.auth.signInWithPassword(
+                        email: email,
+                        password: password,
+                      );
+
+                      final user = response.user;
+
+                      if (user == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Login failed. Try again.')),
+                        );
+                        return;
+                      }
+
+                      if (user.emailConfirmedAt == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please verify your email')),
+                        );
+                        await supabase.auth.signOut();
+                        return;
+                      }
+
+                      final userInfo = await supabase
+                        .from('user_info')
+                        .select()
+                        .eq('user_id', user.id)
+                        .maybeSingle();
+
+                      if (userInfo == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('User profile does not exist.')),
+                        );
+                        return;
+                      }
+
+                      final isAdmin = userInfo['is_admin'] ?? false;
+
+                      if (!mounted) return;
+
+                      if (isAdmin) {
+                        Navigator.pushReplacementNamed(context, '/admin');
+                      } else {
+                        Navigator.pushReplacementNamed(context, '/home_screen');
+                      }
+                    } on AuthException catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Your email or password is incorrect, please try again.')),
+                      );
+                    }
+                  },
+                  child: const Text(
                           'SIGN IN',
                           style: TextStyle(
                             color: Colors.white, // explicit white text
@@ -197,41 +253,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-}
-
-class User {
-  final String email;
-  final String role; // 'admin' or 'client'
-  const User({required this.email, required this.role});
-}
-
-class MockAuthService {
-  // Simulate a backend: hardcoded accounts
-  // Sample accounts:
-  // admin:  admin@gmail.com / admin123
-  // client: client@gmail.com / client123
-  static Future<User?> login(String email, String password) async {
-    await Future.delayed(const Duration(milliseconds: 500)); // simulate latency
-
-    final users = [
-      {'email': 'admin@gmail.com', 'password': 'admin123', 'role': 'admin'},
-      {'email': 'client@gmail.com', 'password': 'client123', 'role': 'client'},
-    ];
-
-    final match = users.firstWhere(
-      (u) => u['email'] == email && u['password'] == password,
-      orElse: () => {},
-    );
-
-    if (match.isNotEmpty) {
-      return User(email: match['email'] as String, role: match['role'] as String);
-    }
-    return null;
-  }
-
-  static Future<void> logout() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    // clear session if needed
   }
 }

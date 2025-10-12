@@ -3,6 +3,7 @@ import '../models/ticket.dart';
 import '../services/ticket_repository.dart';
 import 'ticket_details_screen.dart';
 import '../widgets/app_drawer.dart'; // added so we can open the end drawer
+import '../constants.dart';
 import '../widgets/app_appbar.dart'; // ADDED
 
 class MyTicketsScreen extends StatelessWidget {

@@ -5,10 +5,10 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onMenuTap;
 
   const AppHeader({
-    super.key,
+    Key? key,
     required this.title,
     required this.onMenuTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

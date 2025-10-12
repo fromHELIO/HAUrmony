@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupNonAngeliteScreen extends StatefulWidget {
   const SignupNonAngeliteScreen({super.key});
@@ -16,6 +17,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final supabase = Supabase.instance.client;
 
   @override
   void dispose() {
@@ -53,14 +55,56 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
     return null;
   }
 
-  void _submit() {
-    if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fix the errors')));
-      return;
+  void _submit() async {
+      if (!_formKey.currentState!.validate()) return;
+
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
+      final firstname = firstNameController.text.trim();
+      final lastname = lastNameController.text.trim();
+
+      final supabase = Supabase.instance.client;
+
+      try {
+        final authResponse = await supabase.auth.signUp(
+          email: email,
+          password: password,
+          emailRedirectTo: 'io.supabase.flutter://login-callback/',
+        );
+
+      final user = authResponse.user;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Sign-up failed.')),
+        );
+        return;
+      }
+
+      await supabase.from('user_info').insert({
+        'user_id': user.id,
+        'first_name': firstname,
+        'last_name': lastname,
+        'is_angelite': false,
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Sign-up successful. Please verify your account in your email.')
+          ),
+        );
+        Navigator.pop(context);
+      }
+      } on AuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Authentication error: ${e.message}')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Unexpected error: $e')),
+        );
+      }
     }
-    // On successful validation navigate to home_screen
-    Navigator.pushReplacementNamed(context, '/home_screen');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,55 +141,57 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
         ),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              const Text('Hello, Non – Angelite!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              const Text('Not a student? Not a problem! Sign up with a valid email.'),
-              const SizedBox(height: 24),
-              TextFormField(controller: firstNameController, decoration: const InputDecoration(labelText: 'First Name'), validator: _requiredValidator),
-              const SizedBox(height: 12),
-              TextFormField(controller: lastNameController, decoration: const InputDecoration(labelText: 'Last Name'), validator: _requiredValidator),
-              const SizedBox(height: 12),
-              TextFormField(controller: contactController, decoration: const InputDecoration(labelText: 'Contact Number')),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: _emailValidator,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(controller: passwordController, obscureText: true, decoration: const InputDecoration(labelText: 'Password'), validator: _passwordValidator),
-              const SizedBox(height: 12),
-              TextFormField(controller: confirmPasswordController, obscureText: true, decoration: const InputDecoration(labelText: 'Confirm Password'), validator: _confirmPasswordValidator),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kLogoColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    elevation: 2,
-                  ),
-                  onPressed: _submit,
-                  child: const Text(
-                    'SIGN UP',
-                    style: TextStyle(
-                      color: Colors.white, // explicit white text
-                      fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                const Text('Hello, Non – Angelite!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                const Text('Not a student? Not a problem! Sign up with a valid email.'),
+                const SizedBox(height: 24),
+                TextFormField(controller: firstNameController, decoration: const InputDecoration(labelText: 'First Name'), validator: _requiredValidator),
+                const SizedBox(height: 12),
+                TextFormField(controller: lastNameController, decoration: const InputDecoration(labelText: 'Last Name'), validator: _requiredValidator),
+                const SizedBox(height: 12),
+                TextFormField(controller: contactController, decoration: const InputDecoration(labelText: 'Contact Number')),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: _emailValidator,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(controller: passwordController, obscureText: true, decoration: const InputDecoration(labelText: 'Password'), validator: _passwordValidator),
+                const SizedBox(height: 12),
+                TextFormField(controller: confirmPasswordController, obscureText: true, decoration: const InputDecoration(labelText: 'Confirm Password'), validator: _confirmPasswordValidator),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kLogoColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      elevation: 2,
+                    ),
+                    onPressed: _submit,
+                    child: const Text(
+                      'SIGN UP',
+                      style: TextStyle(
+                        color: Colors.white, // explicit white text
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

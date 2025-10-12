@@ -14,8 +14,14 @@ import 'admin/Admin screens/tickets.dart';
 import 'admin/Admin screens/users.dart';
 import 'admin/Admin screens/reports.dart';
 import 'admin/Admin screens/menu.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://qfgdezwllzrtxbilnrqh.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZ2RlendsbHpydHhiaWxucnFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5ODkzNjQsImV4cCI6MjA3NTU2NTM2NH0.iDmZeNR7JkXlj4qEYKvUmyJtK21fdxjZ2ch7skXrtKQ',
+  );
   runApp(const HAUrmonyApp());
 }
 

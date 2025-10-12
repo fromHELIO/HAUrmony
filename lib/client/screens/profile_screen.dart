@@ -112,6 +112,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final avatar = CircleAvatar(
+      radius: 44,
+      backgroundColor: Color(colorValue),
+      child: Text(
+        // show up to 10 characters (trim to fit)
+        initials.length > 10 ? initials.substring(0, 10) : initials,
+        textAlign: TextAlign.center,
+        style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -125,13 +136,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           key: _formKey,
           child: ListView(
             children: [
+              Center(child: GestureDetector(onTap: _pickAvatar, child: avatar)),
               const SizedBox(height: 12),
-              Center(
-                child: TextButton(
-                  onPressed: _pickAvatar,
-                  child: const Text('Change Avatar'),
-                ),
-              ),
+              Center(child: TextButton(onPressed: _pickAvatar, child: const Text('Change Avatar'))),
               const SizedBox(height: 18),
               TextFormField(
                 controller: _nameCtrl,
@@ -151,6 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
               ),
               const SizedBox(height: 12),
+              // Contact field added
               TextFormField(
                 controller: _contactCtrl,
                 decoration: const InputDecoration(labelText: 'Contact Number'),
@@ -165,7 +173,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: const Text('SAVE', style: TextStyle(color: Colors.white)),
                 ),
               ),
-              const SizedBox(height: 12),
             ],
           ),
         ),

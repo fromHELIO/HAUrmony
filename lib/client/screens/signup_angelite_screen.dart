@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../widgets/app_appbar.dart'; // ADDED
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupAngeliteScreen extends StatefulWidget {
   const SignupAngeliteScreen({super.key});
@@ -56,9 +57,54 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
     return null;
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, '/home_screen');
+  void _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final firstname = firstNameController.text.trim();
+    final lastname = lastNameController.text.trim();
+
+    final supabase = Supabase.instance.client;
+
+    try {
+      final authResponse = await supabase.auth.signUp(
+        email: email,
+        password: password,
+        emailRedirectTo: 'io.supabase.flutter://login-callback/',
+      );
+
+    final user = authResponse.user;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sign-up failed.')),
+      );
+      return;
+    }
+
+    await supabase.from('user_info').insert({
+      'user_id': user.id,
+      'first_name': firstname,
+      'last_name': lastname,
+      'is_angelite': true,
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sign-up successful. Please verify your account in your email.')
+        ),
+      );
+      Navigator.pop(context);
+    }
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Authentication error: ${e.message}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unexpected error: $e')),
+      );
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/ticket.dart';
 import '../widgets/app_drawer.dart';
+import '../constants.dart';
 import '../widgets/app_appbar.dart'; // ADDED
 
 class TicketDetailsScreen extends StatelessWidget {
