@@ -71,7 +71,6 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
       final authResponse = await supabase.auth.signUp(
         email: email,
         password: password,
-        emailRedirectTo: 'io.supabase.flutter://login-callback/',
       );
 
     final user = authResponse.user;
@@ -170,4 +169,5 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
       ),
     );
   }
+
 }
