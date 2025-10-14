@@ -16,12 +16,56 @@ import 'admin/Admin screens/reports.dart';
 import 'admin/Admin screens/menu.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(); //ADDED
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
     url: 'https://qfgdezwllzrtxbilnrqh.supabase.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFmZ2RlendsbHpydHhiaWxucnFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5ODkzNjQsImV4cCI6MjA3NTU2NTM2NH0.iDmZeNR7JkXlj4qEYKvUmyJtK21fdxjZ2ch7skXrtKQ',
   );
+
+  final supabase = Supabase.instance.client; //ADDED
+
+  // Email Redirection Handling
+  final uri = Uri.base;
+  if (uri.scheme == 'io.supabase.haurmony' && uri.host == 'login-callback') {
+    try {
+      await supabase.auth.exchangeCodeForSession(uri.toString());
+      debugPrint('Session restored from verification email.');
+    } catch (e, st) {
+      debugPrint('Failed to restore session: $e\n$st');
+    }
+  } //ADDED
+
+  // Listening for Authentication State Changes
+  Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
+    final event = data.event;
+    final session = data.session;
+
+    if (event == AuthChangeEvent.signedIn && session != null) {
+      final supabase = Supabase.instance.client;
+      final userId = session.user.id;
+
+      final userInfo = await supabase
+      .from('user_info')
+      .select('is_admin')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+      final isAdmin = userInfo?['is_admin'] == true;
+
+      debugPrint('User ${session.user.email} verified and signed in. Admin: $isAdmin');
+
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        isAdmin ? '/admin' : '/home_screen',
+        (route) => false,
+      );
+    } else if (event == AuthChangeEvent.signedOut) {
+      debugPrint('User signed out.');
+    }
+  }); //ADDED
+  
   runApp(const HAUrmonyApp());
 }
 
@@ -31,6 +75,7 @@ class HAUrmonyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey, //ADDED
       debugShowCheckedModeBanner: false,
       title: 'HAUrmony',
       theme: ThemeData(
@@ -62,7 +107,7 @@ class AdminMainPage extends StatefulWidget {
   const AdminMainPage({super.key});
 
   @override
-  _AdminMainPageState createState() => _AdminMainPageState();
+  State<AdminMainPage> createState() => _AdminMainPageState(); //MODIFIED
 }
 
 class _AdminMainPageState extends State<AdminMainPage> {
