@@ -57,6 +57,14 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
     return null;
   }
 
+  String? _studNumValidator(String? v) {
+    if (v == null || v.isEmpty) return 'Enter student number';
+    final studNum = v.trim();
+    final studNumRegEx = RegExp(r'20[0-9]{6}');
+    if (!studNumRegEx.hasMatch(studNum)) return 'Enter a student number';
+    return null;
+  }
+
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -64,6 +72,7 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
     final password = passwordController.text.trim();
     final firstname = firstNameController.text.trim();
     final lastname = lastNameController.text.trim();
+    final studNum = studentNumberController.text.trim();
 
     final supabase = Supabase.instance.client;
 
@@ -86,6 +95,7 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
       'user_id': user.id,
       'first_name': firstname,
       'last_name': lastname,
+      'student_number': studNum,
       'is_angelite': true,
     });
 
@@ -137,7 +147,7 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
                   validator: _hauEmailValidator,
                 ),
                 const SizedBox(height: 12),
-                TextFormField(controller: studentNumberController, decoration: const InputDecoration(labelText: 'Student Number')),
+                TextFormField(controller: studentNumberController, decoration: const InputDecoration(labelText: 'Student Number'), validator: _studNumValidator,),
                 const SizedBox(height: 12),
                 TextFormField(controller: passwordController, obscureText: true, decoration: const InputDecoration(labelText: 'Password'), validator: _passwordValidator),
                 const SizedBox(height: 12),
@@ -170,6 +180,4 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
       ),
     );
   }
-
 }
-
