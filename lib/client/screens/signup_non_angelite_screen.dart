@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
+// import '../widgets/app_appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupNonAngeliteScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final supabase = Supabase.instance.client;
+  // final supabase = Supabase.instance.client;
 
   @override
   void dispose() {
@@ -55,6 +56,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
     return null;
   }
 
+  //DB INTEGRATION CHANGES START HERE...
   void _submit() async {
       if (!_formKey.currentState!.validate()) return;
 
@@ -69,7 +71,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
         final authResponse = await supabase.auth.signUp(
           email: email,
           password: password,
-          emailRedirectTo: 'io.supabase.flutter://login-callback/',
+          emailRedirectTo: 'io.supabase.haurmony://login-callback/',
         );
 
       final user = authResponse.user;
@@ -90,14 +92,18 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Sign-up successful. Please verify your account in your email.')
+            content: Text('Sign-up successful. Please verify your account in your email.'),
           ),
         );
         Navigator.pop(context);
       }
       } on AuthException catch (e) {
+        final message = e.message.contains('User already registered.')
+          ? 'This email is already registered. Please proceed to log in.'
+          : e.message;
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Authentication error: ${e.message}')),
+          SnackBar(content: Text('Authentication error: $message')),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -109,8 +115,8 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //REMOVED APPBAR WITH HAMBURGER MENU (NOT NEEDED IN SIGN-UP SCREEN)
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -123,7 +129,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              'lib/assets/haurmony.png', // fixed path
+              'lib/assets/haurmony.png', //FIXED PATH
               width: kLogoSize,
               height: kLogoSize,
               fit: BoxFit.contain,
@@ -139,7 +145,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
             ),
           ],
         ),
-      ),
+      ), //ADDED
 
       body: SafeArea(
         child: Padding(
