@@ -55,6 +55,14 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
     return null;
   }
 
+  String? _contactValidator(String? v) {
+    if (v == null || v.isEmpty) return 'Enter contact';
+    final contact = v.trim();
+    final contactRegEx = RegExp(r'09[0-9]{9}');
+    if (!contactRegEx.hasMatch(contact)) return 'Enter a valid contact number';
+    return null;
+  }
+
   void _submit() async {
       if (!_formKey.currentState!.validate()) return;
 
@@ -62,6 +70,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
       final password = passwordController.text.trim();
       final firstname = firstNameController.text.trim();
       final lastname = lastNameController.text.trim();
+      final contact = contactController.text.trim();
 
       final supabase = Supabase.instance.client;
 
@@ -84,6 +93,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
         'user_id': user.id,
         'first_name': firstname,
         'last_name': lastname,
+        'contact': contact,
         'is_angelite': false,
       });
 
@@ -156,7 +166,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
                 const SizedBox(height: 12),
                 TextFormField(controller: lastNameController, decoration: const InputDecoration(labelText: 'Last Name'), validator: _requiredValidator),
                 const SizedBox(height: 12),
-                TextFormField(controller: contactController, decoration: const InputDecoration(labelText: 'Contact Number')),
+                TextFormField(controller: contactController, decoration: const InputDecoration(labelText: 'Contact Number'), validator: _contactValidator),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: emailController,
