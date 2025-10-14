@@ -50,8 +50,10 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>io.supabase.flutter</string>
+				<string>io.supabase.haurmony</string>
 			</array>
+			<key>CFBundleURLName</key>
+			<string>login-callback</string>
 		</dict>
 	</array>
 </dict>
