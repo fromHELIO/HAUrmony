@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //REMOVED APPBAR WITH HAMBURGER MENU (NOT NEEDED IN LOG IN SCREEN)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
@@ -58,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ],
         ),
-      ),
+      ), //ADDED
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -143,6 +144,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
         
                         final user = response.user;
+
+                        debugPrint('Login successful for ${user?.email}, user.id: ${user?.id}');
         
                         if (user == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -151,9 +154,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           return;
                         }
         
+                        // Checking if email is verified
                         if (user.emailConfirmedAt == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Please verify your email')),
+                            const SnackBar(content: Text('Please verify your email before logging in.')),
                           );
                           await supabase.auth.signOut();
                           return;
@@ -161,18 +165,21 @@ class _LoginScreenState extends State<LoginScreen> {
         
                         final userInfo = await supabase
                           .from('user_info')
-                          .select()
+                          .select('is_admin')
                           .eq('user_id', user.id)
                           .maybeSingle();
+
+                        // print('Supabase user.id: ${user.id}');
+                        // print('userInfo from DB: $userInfo');
         
                         if (userInfo == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('User profile does not exist.')),
+                            const SnackBar(content: Text('User profile does not exist in the database.')),
                           );
                           return;
                         }
         
-                        final isAdmin = userInfo['is_admin'] ?? false;
+                        final isAdmin = userInfo['is_admin'] == true;
         
                         if (!mounted) return;
         
@@ -181,12 +188,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         } else {
                           Navigator.pushReplacementNamed(context, '/home_screen');
                         }
+
+                        // Navigator.pop(context);
+
                       } on AuthException catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Your email or password is incorrect, please try again.')),
+                          SnackBar(content: Text('Authentication Error: ${e.message}')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Unexpected Error: $e')),
                         );
                       }
                     },
+
                     child: const Text(
                             'SIGN IN',
                             style: TextStyle(
