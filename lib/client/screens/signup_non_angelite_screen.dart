@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
-// import '../widgets/app_appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupNonAngeliteScreen extends StatefulWidget {
@@ -204,3 +203,4 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
     );
   }
 }
+
