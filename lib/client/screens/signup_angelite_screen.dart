@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../constants.dart';
-import '../widgets/app_appbar.dart'; // ADDED
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupAngeliteScreen extends StatefulWidget {
@@ -71,7 +70,7 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
       final authResponse = await supabase.auth.signUp(
         email: email,
         password: password,
-        emailRedirectTo: 'io.supabase.flutter://login-callback/',
+        emailRedirectTo: 'io.supabase.haurmony://login-callback/',
       );
 
     final user = authResponse.user;
@@ -98,20 +97,55 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
       Navigator.pop(context);
     }
     } on AuthException catch (e) {
+      final message = e.message.contains('User already registered.')
+        ? 'This email is already registered. Please proceed to log in.'
+        : e.message;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Authentication error: ${e.message}')),
+        SnackBar(content: Text('Authentication error: $message')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Unexpected error: $e')),
       );
     }
-  }
+  } //MODIFIED
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWithHamburger(context, showBack: true, openEndDrawer: false), // REPLACED AppBar
+      //REMOVED APPBAR WITH HAMBURGER MENU (NOT NEEDED IN SIGN-UP SCREEN)
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: kLogoColor,
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'lib/assets/haurmony.png', // fixed path
+              width: kLogoSize,
+              height: kLogoSize,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'HAUrmony',
+              style: TextStyle(
+                color: kLogoColor,
+                fontWeight: FontWeight.bold,
+                fontSize: kTitleFontSize,
+              ),
+            ),
+          ],
+        ),
+      ), //ADDED
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -170,6 +204,6 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
       ),
     );
   }
-
 }
+
 
