@@ -94,47 +94,8 @@ class _ZoneSelectionScreenState extends State<ZoneSelectionScreen> {
                     ),
                   ),
         
-                  // _zoneSelector('Zone A', zoneA, (v) => setState(() => zoneA = v)),
-                  // const SizedBox(height: 8),
-                  // _zoneSelector('Zone B', zoneB, (v) => setState(() => zoneB = v)),
-                  // const SizedBox(height: 8),
-                  // _zoneSelector('Zone C', zoneC, (v) => setState(() => zoneC = v)),
-        
                   const SizedBox(height: 24),
-                  // Row(children: [
-                  //   Expanded(
-                  //     child: ElevatedButton(
-                  //       style: ElevatedButton.styleFrom(
-                  //         backgroundColor: ticketYellow,
-                  //         padding: const EdgeInsets.symmetric(vertical: 16),
-                  //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  //         elevation: 4,
-                  //       ),
-                  //       onPressed: isLoading
-                  //           ? null
-                  //           : () {
-                  //               if (zoneA + zoneB + zoneC == 0) {
-                  //                 setState(() => errorMessage = "Please select at least one ticket.");
-                  //                 return;
-                  //               }
-                  //               // navigate to the separate OrderSummaryScreen file and pass quantities
-                  //               Navigator.push(
-                  //                 context,
-                  //                 MaterialPageRoute(
-                  //                   builder: (context) => OrderSummaryScreen(
-                  //                     zoneAQty: zoneA,
-                  //                     zoneBQty: zoneB,
-                  //                     zoneCQty: zoneC,
-                  //                   ),
-                  //                 ),
-                  //               );
-                  //             },
-                  //       child: isLoading
-                  //           ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  //           : const Text('CHECK OUT', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, letterSpacing: 2, color: Colors.white)),
-                  //     ),
-                  //   ),
-                  // ]),
+                  
                   const SizedBox(height: 24),
                   Card(
                     elevation: 2,
