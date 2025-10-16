@@ -19,8 +19,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int zoneBSold = 0;
   int zoneCSold = 0;
 
-  final int zoneCapacity = 100; //per zone
-  final int totalCapacity = 1500; //overall tickets
+  final int zoneCapacity = 100;
+  final int totalCapacity = 300;
 
   @override
   void initState() {
@@ -57,7 +57,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final zoneBData = await supabase.from('zone_b_queue').select('queue_num');
       final zoneCData = await supabase.from('zone_c_queue').select('queue_num');
 
-      if (!mounted) return; //ADDED
+      if (!mounted) return;
+
       setState(() {
         ticketsSoldToday = salesToday.length;
         totalRevenue = totalRevenueValue;
@@ -100,58 +101,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       drawer: MenuScreen(),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              
-              // Statistic Cards
-              Row(
-                children: [
-                  Expanded(
-                    child: _statCard(
-                      title: "Tickets Sold Today",
-                      value: "$ticketsSoldToday / $totalCapacity",
-                      color: const Color(0xFFE09B1E),
-                      shadowArrow: true,
+        child: RefreshIndicator(
+          onRefresh: _fetchDashboardData,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                
+                // Statistics Cards
+                Row(
+                  children: [
+                    Expanded(
+                      child: _statCard(
+                        title: "Tickets Sold Today",
+                        value: "$ticketsSoldToday / $totalCapacity",
+                        color: const Color(0xFFE09B1E),
+                        shadowArrow: true,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _statCard(
-                      title: "Total Revenue",
-                      value: "₱ ${totalRevenue.toStringAsFixed(2)}",
-                      color: const Color(0xFFB33A2F),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _statCard(
+                        title: "Total Revenue",
+                        value: "₱ ${totalRevenue.toStringAsFixed(2)}",
+                        color: const Color(0xFFB33A2F),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+                  ],
+                ),
+                const SizedBox(height: 24),
 
-              // Zone Cards
-              _zoneCard("Zone A", "$zoneASold / $zoneCapacity", const Color(0xFF941E1E)),
-              _zoneCard("Zone B", "$zoneBSold / $zoneCapacity", const Color(0xFFE09B1E)),
-              _zoneCard("Zone C", "$zoneCSold / $zoneCapacity", const Color(0xFFDE8F4A)),
-              const SizedBox(height: 24),
+                // Zone Cards
+                _zoneCard("Zone A", "$zoneASold / $zoneCapacity", const Color(0xFF941E1E)),
+                _zoneCard("Zone B", "$zoneBSold / $zoneCapacity", const Color(0xFFE09B1E)),
+                _zoneCard("Zone C", "$zoneCSold / $zoneCapacity", const Color(0xFFDE8F4A)),
+                const SizedBox(height: 24),
 
-              // Circular Indicator
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _CirclePercent(label: "Zone A", percent: zoneAPercent, color: Color(0xFF941E1E)),
-                  _CirclePercent(label: "Zone B", percent: zoneBPercent, color: Color(0xFFE09B1E)),
-                  _CirclePercent(label: "Zone C", percent: zoneCPercent, color: Color(0xFFDE8F4A)),
-                ],
-              ),
-            ],
-          ),
+                // Circular Indicators
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _CirclePercent(label: "Zone A", percent: zoneAPercent, color: Color(0xFF941E1E)),
+                    _CirclePercent(label: "Zone B", percent: zoneBPercent, color: Color(0xFFE09B1E)),
+                    _CirclePercent(label: "Zone C", percent: zoneCPercent, color: Color(0xFFDE8F4A)),
+                  ],
+                ),
+              ],
+            ),
+          ),          
         ),
       ),
     );
   }
-
-  // Widgets
 
   Widget _statCard({
     required String title,
@@ -273,4 +276,5 @@ class _CirclePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+
 }
