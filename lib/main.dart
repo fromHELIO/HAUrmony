@@ -8,7 +8,7 @@ import 'client/screens/forgot_password_screen.dart';
 import 'client/screens/home_screen.dart';
 import 'client/screens/zone_selection_screen.dart';
 import 'client/screens/my_tickets_screen.dart';
-import 'client/screens/profile_screen.dart';
+// import 'client/screens/profile_screen.dart';
 import 'admin/Admin screens/dashboard.dart';
 import 'admin/Admin screens/tickets.dart';
 import 'admin/Admin screens/users.dart';
@@ -49,7 +49,7 @@ class HAUrmonyApp extends StatelessWidget {
         '/home_screen': (context) => HomeScreen(),
         '/zone_selection': (context) => ZoneSelectionScreen(),
         '/my_tickets': (context) => MyTicketsScreen(),
-        '/profile': (context) => const ProfileScreen(),
+        // '/profile': (context) => const ProfileScreen(),
 
         // Admin-side routes
         '/admin': (context) => const AdminMainPage(),

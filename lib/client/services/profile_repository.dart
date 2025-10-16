@@ -10,7 +10,8 @@ class ProfileRepository {
       name: 'ADMIN',
       email: 'usc@hau.edu.ph',
       contact: '', // default empty contact
-      initials: 'AD',    ),
+      initials: 'AD',// default no photo
+    ),
   );
 
   Profile get current => profileNotifier.value;

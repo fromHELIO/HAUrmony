@@ -23,14 +23,16 @@ class AttendeesScreen extends StatelessWidget {
         foregroundColor: Colors.red.shade900,
         elevation: 0,
       ),
-      body: ListView.builder(
-        itemCount: attendees.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: Icon(Icons.person, color: Colors.red.shade900),
-            title: Text(attendees[index]),
-          );
-        },
+      body: SafeArea(
+        child: ListView.builder(
+          itemCount: attendees.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: Icon(Icons.person, color: Colors.red.shade900),
+              title: Text(attendees[index]),
+            );
+          },
+        ),
       ),
     );
   }

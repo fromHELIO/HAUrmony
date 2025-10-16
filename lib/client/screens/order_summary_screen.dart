@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/ticket.dart';
 import 'order_success_screen.dart';
 import '../widgets/app_drawer.dart'; // added to allow opening drawer
@@ -7,15 +8,16 @@ import '../constants.dart';
 const Color ticketYellow = Color(0xFFF4B942);
 
 class OrderSummaryScreen extends StatefulWidget {
-  final int zoneAQty;
-  final int zoneBQty;
-  final int zoneCQty;
+
+  final String zoneName;
+  final int quantity;
+  final double totalPrice;
 
   const OrderSummaryScreen({
     super.key,
-    required this.zoneAQty,
-    required this.zoneBQty,
-    required this.zoneCQty,
+    required this.zoneName,
+    required this.quantity,
+    required this.totalPrice,
   });
 
   @override
@@ -24,25 +26,6 @@ class OrderSummaryScreen extends StatefulWidget {
 
 class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
   int selectedPayment = 2; // 1 = card, 2 = e-wallet
-  int get total => (widget.zoneAQty + widget.zoneBQty + widget.zoneCQty) * 300;
-
-  String _computeSectionLabel() {
-    final a = widget.zoneAQty > 0;
-    final b = widget.zoneBQty > 0;
-    final c = widget.zoneCQty > 0;
-    if (a && !b && !c) return 'Zone A';
-    if (!a && b && !c) return 'Zone B';
-    if (!a && !b && c) return 'Zone C';
-    return 'Mixed Zones';
-  }
-
-  String _sectionDetails() {
-    final parts = <String>[];
-    if (widget.zoneAQty > 0) parts.add('Zone A: ${widget.zoneAQty}');
-    if (widget.zoneBQty > 0) parts.add('Zone B: ${widget.zoneBQty}');
-    if (widget.zoneCQty > 0) parts.add('Zone C: ${widget.zoneCQty}');
-    return parts.isEmpty ? 'No tickets' : parts.join('\n');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,10 +97,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                     padding: const EdgeInsets.all(12.0),
                     child: Column(
                       children: [
-                        if (widget.zoneAQty > 0) _zoneListTile('Zone A', widget.zoneAQty, widget.zoneAQty * 300),
-                        if (widget.zoneBQty > 0) _zoneListTile('Zone B', widget.zoneBQty, widget.zoneBQty * 300),
-                        if (widget.zoneCQty > 0) _zoneListTile('Zone C', widget.zoneCQty, widget.zoneCQty * 300),
-
+                        _zoneListTile(widget.zoneName, widget.quantity, widget.totalPrice),
                         const SizedBox(height: 12),
                         const Divider(),
                         const SizedBox(height: 8),
@@ -127,7 +107,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text('Total:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                            Text('₱ $total', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            Text('₱ ${widget.totalPrice}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           ],
                         ),
                       ],
@@ -145,7 +125,6 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                       _paymentTile(Icons.credit_card, 'Credit / Debit Card', 1),
                       const Divider(height: 0),
                       _paymentTile(Icons.account_balance_wallet, 'E - Wallet', 2),
-                      _paymentTile(Icons.money, 'Cash', 3),
                     ],
                   ),
                 ),
@@ -168,28 +147,84 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                         context: context,
                         builder: (_) => AlertDialog(
                           title: const Text('Place Order'),
-                          content: Text('Confirm purchase of ₱ $total?'),
+                          content: Text('Confirm purchase of ₱ ${widget.totalPrice}?'),
                           actions: [
                             TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
                             TextButton(
-                              onPressed: () {
-                                Navigator.pop(context); // close dialog
+                              onPressed: () async {
 
-                                // build the Ticket from the current order data
-                                final ticket = Ticket(
-                                  title: 'HAU UDays Concert 2026',
-                                  name: 'Buyer Name', // replace with real buyer info if available
-                                  section: _sectionDetails(), // explicit per-zone quantities
-                                  qty: widget.zoneAQty + widget.zoneBQty + widget.zoneCQty,
-                                  queue: 'Queue Nos: TBD',
-                                  date: 'Saturday, January 24, 2026',
-                                  time: '3:00 PM to 10:00 PM',
+                                // necessary constants
+                                final supabase = Supabase.instance.client;
+                                final user = supabase.auth.currentUser;
+                                final userInfo = await supabase
+                                .from('user_info')
+                                .select()
+                                .eq('user_id', user!.id)
+                                .single();
+
+                                List<Ticket> tickets = []; // list of tickets
+
+                                // add newly purchased tickets to tickets[] and add them to queue
+                                for (int i = 0; i < widget.quantity; i++)
+                                {
+                                final fetchTix = await supabase
+                                .from('tickets')
+                                .select()
+                                .eq('zone', widget.zoneName.substring(5).toUpperCase())
+                                .eq('is_sold', false)
+                                .order('ticket_id', ascending: true)
+                                .limit(1)
+                                .single()
+                                ;
+
+                                await supabase
+                                .from('sales')
+                                .insert({
+                                  'ticket_id': fetchTix['ticket_id'],
+                                  'buyer_id': userInfo['info_id'],
+                                  'sale_price': widget.totalPrice,
+                                })
+                                ;
+
+                                final saleID = await supabase
+                                .from('sales')
+                                .select('sale_id')
+                                .eq('ticket_id', fetchTix['ticket_id'])
+                                .single()
+                                ;
+
+                                final zoneQueue = 'zone_${(widget.zoneName).substring(5).toLowerCase()}_queue';
+
+                                await supabase
+                                .from(zoneQueue)
+                                .insert({
+                                  'sale_id': saleID['sale_id'],
+                                })
+                                ;
+
+                                await supabase
+                                .from('tickets')
+                                .update({'is_sold': true})
+                                .eq('ticket_id', fetchTix['ticket_id'])
+                                ;
+                                
+
+                                final Ticket ticket = Ticket(
+                                  name: '${userInfo["first_name"]} ${userInfo["last_name"]}',
+                                  section: widget.zoneName,
                                 );
 
+                                tickets.add(ticket);
+
+                                }
+
+
+
                                 // navigate to success screen with the constructed ticket
-                                Navigator.pushReplacement(
+                                Navigator.pop(context);
+                                Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => OrderSuccessScreen(ticket: ticket)),
+                                  MaterialPageRoute(builder: (_) => OrderSuccessScreen(tickets: tickets)),
                                 );
                               },
                               child: const Text('Confirm'),
@@ -210,32 +245,18 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
     );
   }
 
-  Widget _zoneListTile(String title, int qty, int price) {
+  Widget _zoneListTile(String title, int qty, double price) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         children: [
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
               const SizedBox(height: 4),
-              Text('qty: $qty', style: const TextStyle(fontSize: 12, color: Colors.black54)),
+              Text('qty: $qty', style: const TextStyle(fontSize: 13, color: Colors.black54)),
             ]),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('₱ $price', style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
-              TextButton(
-                onPressed: () {
-                  // optional: show details for this zone or navigate to summary/my tickets
-                  Navigator.pushNamed(context, '/my_tickets');
-                },
-                child: const Text('View Ticket', style: TextStyle(fontSize: 12)),
-              ),
-            ],
-          )
         ],
       ),
     );

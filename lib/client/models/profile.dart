@@ -1,8 +1,8 @@
 class Profile {
-  final String name;
-  final String email;
-  final String contact;
-  final String initials;
+  String name;
+  String email;
+  String contact; // new contact field
+  String initials;
 
   Profile({
     required this.name,

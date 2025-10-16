@@ -15,10 +15,12 @@ class UserDetailScreen extends StatelessWidget {
         onMenuTap: () => Scaffold.of(context).openDrawer(),
       ),
       drawer: MenuScreen(),
-      body: Center(
-        child: Text(
-          "Details for $name",
-          style: TextStyle(fontSize: 18),
+      body: SafeArea(
+        child: Center(
+          child: Text(
+            "Details for $name",
+            style: TextStyle(fontSize: 18),
+          ),
         ),
       ),
     );
