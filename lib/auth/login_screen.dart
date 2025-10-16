@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../client/constants.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // added
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -38,7 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //REMOVED APPBAR WITH HAMBURGER MENU (NOT NEEDED IN LOG IN SCREEN)
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
@@ -59,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ],
         ),
-      ), //ADDED
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -120,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
-                      foregroundColor: Colors.white, // text/icon color
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       elevation: 2,
@@ -169,9 +168,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           .eq('user_id', user.id)
                           .maybeSingle();
 
-                        // print('Supabase user.id: ${user.id}');
-                        // print('userInfo from DB: $userInfo');
-        
                         if (userInfo == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('User profile does not exist in the database.')),
@@ -189,8 +185,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushReplacementNamed(context, '/home_screen');
                         }
 
-                        // Navigator.pop(context);
-
                       } on AuthException catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Authentication Error: ${e.message}')),
@@ -205,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                             'SIGN IN',
                             style: TextStyle(
-                              color: Colors.white, // explicit white text
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               letterSpacing: 1,
