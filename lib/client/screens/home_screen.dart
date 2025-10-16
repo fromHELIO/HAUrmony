@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/app_drawer.dart';
-import '../widgets/app_title.dart'; // added
+import '../widgets/app_title.dart';
+import '../models/ticket.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/ticket_repository.dart'; // added
 
 const Color logoRed = Color(0xFFA32020);
 const Color ticketYellow = Color(0xFFF4B942);
@@ -8,8 +11,56 @@ const Color ticketYellow = Color(0xFFF4B942);
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  void _loadPurchasedTickets() async {
+    //necessary information
+    final supabase = Supabase.instance.client;
+    final user = supabase.auth.currentUser;
+    final userInfo = await supabase
+      .from('user_info')
+      .select()
+      .eq('user_id', user!.id)
+      .single()
+      ;
+    
+    List<Ticket> tickets = []; // list of tickets
+
+    // get buy history
+    final buyHistory = await supabase
+      .from('sales')
+      .select()
+      .eq('buyer_id', userInfo['info_id'])
+      ;
+
+      // add past tickets to list
+      for (int i = 0; i < buyHistory.length; i++) {
+
+        final fetchZone = await supabase
+        .from('tickets')
+        .select('zone')
+        .eq('ticket_id', buyHistory[i]['ticket_id'])
+        .single()
+        ;
+
+        final Ticket ticket = Ticket(
+        name: '${userInfo["first_name"]} ${userInfo["last_name"]}',
+        section: 'ZONE ${fetchZone['zone']}',
+        );
+
+        tickets.add(ticket);
+      }
+
+      // add to ticket repo
+      for (int i = 0; i < tickets.length; i++) {
+        TicketRepository.instance.add(tickets[i]);
+      }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    TicketRepository.instance.clear();
+    _loadPurchasedTickets();
+
     return Scaffold(
       // put the drawer on the right and use the hamburger helper to open it
       endDrawer: const AppDrawer(),
@@ -200,7 +251,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                "Contact support at support@haurmony.com or visit the help section in the app.",
+                                "Contact support at haurmony@gmail.com.",
                                 style: TextStyle(fontSize: 13, color: Colors.black87),
                               ),
                             ],

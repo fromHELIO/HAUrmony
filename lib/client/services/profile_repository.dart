@@ -10,9 +10,7 @@ class ProfileRepository {
       name: 'ADMIN',
       email: 'usc@hau.edu.ph',
       contact: '', // default empty contact
-      initials: 'AD',
-      colorValue: 0xFFD32F2F, // default red-ish
-      avatarPath: '', // default no photo
+      initials: 'AD',// default no photo
     ),
   );
 
@@ -26,8 +24,6 @@ class ProfileRepository {
       email: p.email,
       contact: p.contact,
       initials: initials,
-      colorValue: p.colorValue,
-      avatarPath: p.avatarPath,
     );
   }
 
@@ -38,8 +34,6 @@ class ProfileRepository {
       email: email,
       contact: p.contact,
       initials: p.initials,
-      colorValue: p.colorValue,
-      avatarPath: p.avatarPath,
     );
   }
 
@@ -50,8 +44,6 @@ class ProfileRepository {
       email: p.email,
       contact: contact,
       initials: p.initials,
-      colorValue: p.colorValue,
-      avatarPath: p.avatarPath,
     );
   }
 
@@ -62,8 +54,6 @@ class ProfileRepository {
       email: p.email,
       contact: p.contact,
       initials: initials,
-      colorValue: colorValue,
-      avatarPath: avatarPath,
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../client/constants.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // added
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
-                      foregroundColor: Colors.white, // text/icon color
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       elevation: 2,
@@ -143,6 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
         
                         final user = response.user;
+
+                        debugPrint('Login successful for ${user?.email}, user.id: ${user?.id}');
         
                         if (user == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -151,9 +153,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           return;
                         }
         
+                        // Checking if email is verified
                         if (user.emailConfirmedAt == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Please verify your email')),
+                            const SnackBar(content: Text('Please verify your email before logging in.')),
                           );
                           await supabase.auth.signOut();
                           return;
@@ -161,18 +164,18 @@ class _LoginScreenState extends State<LoginScreen> {
         
                         final userInfo = await supabase
                           .from('user_info')
-                          .select()
+                          .select('is_admin')
                           .eq('user_id', user.id)
                           .maybeSingle();
-        
+
                         if (userInfo == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('User profile does not exist.')),
+                            const SnackBar(content: Text('User profile does not exist in the database.')),
                           );
                           return;
                         }
         
-                        final isAdmin = userInfo['is_admin'] ?? false;
+                        final isAdmin = userInfo['is_admin'] == true;
         
                         if (!mounted) return;
         
@@ -181,16 +184,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         } else {
                           Navigator.pushReplacementNamed(context, '/home_screen');
                         }
+
                       } on AuthException catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Your email or password is incorrect, please try again.')),
+                          SnackBar(content: Text('Authentication Error: ${e.message}')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Unexpected Error: $e')),
                         );
                       }
                     },
+
                     child: const Text(
                             'SIGN IN',
                             style: TextStyle(
-                              color: Colors.white, // explicit white text
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               letterSpacing: 1,

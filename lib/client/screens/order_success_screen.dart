@@ -9,8 +9,10 @@ import '../widgets/app_appbar.dart'; // ADDED
 const Color ticketYellow = Color(0xFFF4B942);
 
 class OrderSuccessScreen extends StatelessWidget {
-  final Ticket ticket;
-  const OrderSuccessScreen({super.key, required this.ticket});
+  final List<Ticket> tickets;
+  const OrderSuccessScreen({super.key,
+  required this.tickets
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +69,10 @@ class OrderSuccessScreen extends StatelessWidget {
                     shadowColor: ticketYellow.withOpacity(0.4),
                   ),
                   onPressed: () {
-                    // add to repository (this will update MyTicketsScreen)
-                    TicketRepository.instance.add(ticket);
+                    // add tickets to repo
+                    for (int i = 0; i < tickets.length; i++) {
+                      TicketRepository.instance.add(tickets[i]);
+                    }
 
                     // navigate to My Tickets (user will see the new ticket with correct qty)
                     Navigator.pushReplacement(

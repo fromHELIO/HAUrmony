@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/ticket.dart';
 import '../widgets/app_drawer.dart';
-import '../constants.dart';
 import '../widgets/app_appbar.dart'; // ADDED
 
 class TicketDetailsScreen extends StatelessWidget {
@@ -39,26 +38,26 @@ class TicketDetailsScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                           color: Colors.grey.shade100,
                         ),
-                        child: const Center(child: Text('*EVENT BANNER*', style: TextStyle(fontWeight: FontWeight.bold))),
+                        child: const Center(
+                          child: Text('*EVENT BANNER*', style: TextStyle(fontWeight: FontWeight.bold)))
+                          ,
                       ),
                       const SizedBox(height: 12),
                       Text('Name', style: TextStyle(color: Colors.black54)),
                       Text(ticket.name, style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text('Event', style: TextStyle(color: Colors.black54)),
-                      Text(ticket.title, style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text('Section', style: TextStyle(color: Colors.black54)),
                       Text(ticket.section, style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text('Queue', style: TextStyle(color: Colors.black54)),
-                      Text(ticket.queue, style: const TextStyle(fontWeight: FontWeight.bold)),
+                      // Text('Queue', style: TextStyle(color: Colors.black54)),
+                      // Text(ticket.queue, style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text('Venue', style: TextStyle(color: Colors.black54)),
                       const Text('Holy Angel University', style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      Text('Date & Time', style: TextStyle(color: Colors.black54)),
-                      Text('${ticket.date}\n${ticket.time}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      // Text('Date & Time', style: TextStyle(color: Colors.black54)),
+                      // Text('${ticket.date}\n${ticket.time}', style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 10),
                       const Divider(),
                       const SizedBox(height: 8),
@@ -71,7 +70,7 @@ class TicketDetailsScreen extends StatelessWidget {
                           border: Border.all(color: Colors.black12),
                         ),
                         child: const Text(
-                          '- Don\'t forget to save or bring a copy of your e-ticket.\n- Bring your HAU ID when presenting your ticket. (For Angelites)',
+                          '- Don\'t forget to present your queue once entry begins.\n- Bring your HAU ID when presenting your ticket. (For Angelites)',
                           style: TextStyle(fontSize: 13, color: Colors.black87),
                         ),
                       ),
