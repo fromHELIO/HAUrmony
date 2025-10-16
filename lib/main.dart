@@ -9,6 +9,7 @@ import 'client/screens/home_screen.dart';
 import 'client/screens/zone_selection_screen.dart';
 import 'client/screens/my_tickets_screen.dart';
 import 'client/screens/profile_screen.dart';
+import 'client/screens/reset_password_screen.dart';
 import 'admin/Admin screens/dashboard.dart';
 import 'admin/Admin screens/tickets.dart';
 import 'admin/Admin screens/users.dart';
@@ -59,6 +60,12 @@ Future<void> main() async {
   Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
     final event = data.event;
     final session = data.session;
+
+    if (event == AuthChangeEvent.passwordRecovery) {
+      debugPrint('Password recovery link opened.');
+      navigatorKey.currentState?.pushNamed('/reset_password');
+      return;
+    }
 
     if (event == AuthChangeEvent.signedIn && session != null) {
       final supabase = Supabase.instance.client;
@@ -112,6 +119,7 @@ class HAUrmonyApp extends StatelessWidget {
         '/zone_selection': (context) => ZoneSelectionScreen(),
         '/my_tickets': (context) => MyTicketsScreen(),
         '/profile': (context) => const ProfileScreen(),
+        '/reset_password': (context) => const ResetPasswordScreen(),
 
         // Admin-side routes
         '/admin': (context) => const AdminMainPage(),
