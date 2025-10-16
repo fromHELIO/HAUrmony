@@ -56,7 +56,6 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
     return null;
   }
 
-  //DB INTEGRATION CHANGES START HERE...
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -110,12 +109,11 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
         SnackBar(content: Text('Unexpected error: $e')),
       );
     }
-  } //MODIFIED
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //REMOVED APPBAR WITH HAMBURGER MENU (NOT NEEDED IN SIGN-UP SCREEN)
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
@@ -129,7 +127,7 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              'lib/assets/haurmony.png', // fixed path
+              'lib/assets/haurmony.png',
               width: kLogoSize,
               height: kLogoSize,
               fit: BoxFit.contain,
@@ -145,7 +143,7 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
             ),
           ],
         ),
-      ), //ADDED
+      ),
 
       body: SafeArea(
         child: Padding(
@@ -206,6 +204,3 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
     );
   }
 }
-
-
-
