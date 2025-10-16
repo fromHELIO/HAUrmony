@@ -29,7 +29,6 @@ class MenuScreen extends StatelessWidget {
             leading: Icon(Icons.logout),
             title: Text("Log Out"),
             onTap: () {
-              // close drawer then navigate to LoginScreen and remove all previous routes
               Navigator.of(context).pop();
               Navigator.pushAndRemoveUntil(
                 context,
