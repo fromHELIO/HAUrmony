@@ -16,7 +16,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
   
   Map<String, int> soldTickets = {"ZONE A": 0, "ZONE B": 0, "ZONE C": 0};
   Map<String, bool> zoneClosed = {"ZONE A": false, "ZONE B": false, "ZONE C": false,};
-  final int totalPerZone = 200;
+  final int totalPerZone = 100;
 
   @override
   void initState() {
@@ -160,10 +160,11 @@ class _TicketsScreenState extends State<TicketsScreen> {
                               ),
 
                               onPressed: () {
+                                final zoneLetter = name.split(' ').last; // "ZONE A" → "A"
                                 Navigator.push(
-                                  context, 
+                                  context,
                                   MaterialPageRoute(
-                                    builder: (_) => AttendeesScreen(zoneName: name),
+                                    builder: (context) => AttendeesScreen(initialZone: zoneLetter),
                                   ),
                                 );
                               },
