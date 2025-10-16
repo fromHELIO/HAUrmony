@@ -17,7 +17,6 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  // final supabase = Supabase.instance.client;
 
   @override
   void dispose() {
@@ -55,7 +54,6 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
     return null;
   }
 
-  //DB INTEGRATION CHANGES START HERE...
   void _submit() async {
       if (!_formKey.currentState!.validate()) return;
 
@@ -114,7 +112,6 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //REMOVED APPBAR WITH HAMBURGER MENU (NOT NEEDED IN SIGN-UP SCREEN)
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
@@ -128,7 +125,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              'lib/assets/haurmony.png', //FIXED PATH
+              'lib/assets/haurmony.png',
               width: kLogoSize,
               height: kLogoSize,
               fit: BoxFit.contain,
@@ -144,7 +141,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
             ),
           ],
         ),
-      ), //ADDED
+      ),
 
       body: SafeArea(
         child: Padding(
@@ -189,7 +186,7 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
                     child: const Text(
                       'SIGN UP',
                       style: TextStyle(
-                        color: Colors.white, // explicit white text
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -203,4 +200,3 @@ class _SignupNonAngeliteScreenState extends State<SignupNonAngeliteScreen> {
     );
   }
 }
-
