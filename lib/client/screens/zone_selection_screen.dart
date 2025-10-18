@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'order_summary_screen.dart';
 import '../widgets/app_drawer.dart'; // added to allow hamburger opening end drawer
 import '../constants.dart';
 import '../widgets/app_appbar.dart'; // ADDED
@@ -95,7 +94,7 @@ class _ZoneSelectionScreenState extends State<ZoneSelectionScreen> {
                   ),
         
                   const SizedBox(height: 24),
-                  
+
                   const SizedBox(height: 24),
                   Card(
                     elevation: 2,
@@ -138,22 +137,5 @@ class _ZoneSelectionScreenState extends State<ZoneSelectionScreen> {
       ),
     );
   }
-
-//   Widget _zoneSelector(String zone, int value, ValueChanged<int> onChanged) {
-//     return Row(children: [
-//       const Text("₱ 300", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-//       const SizedBox(width: 12),
-//       Container(decoration: BoxDecoration(border: Border.all(color: Colors.black26), borderRadius: BorderRadius.circular(8)), child: Row(children: [
-//         IconButton(icon: const Icon(Icons.remove), onPressed: value > 0 ? () => onChanged(value - 1) : null),
-//         Text("$value", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-//         IconButton(icon: const Icon(Icons.add), onPressed: () => onChanged(value + 1)),
-//       ])),
-//     ]);
-//   }
-// }
-
-
-
-
 
 }

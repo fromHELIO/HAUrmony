@@ -193,7 +193,8 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                 .single()
                                 ;
 
-                                final zoneQueue = 'zone_${(widget.zoneName).substring(5).toLowerCase()}_queue';
+                                final zoneQueue = 'zone_${(widget.zoneName).substring(5)
+                                                          .toLowerCase()}_queue';
 
                                 await supabase
                                 .from(zoneQueue)
@@ -208,10 +209,17 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
                                 .eq('ticket_id', fetchTix['ticket_id'])
                                 ;
                                 
+                                final queueNum = await supabase
+                                .from(zoneQueue)
+                                .select()
+                                .eq('sale_id', saleID['sale_id'])
+                                .single()
+                                ;
 
                                 final Ticket ticket = Ticket(
                                   name: '${userInfo["first_name"]} ${userInfo["last_name"]}',
                                   section: widget.zoneName,
+                                  queueNum: queueNum['queue_n'],
                                 );
 
                                 tickets.add(ticket);

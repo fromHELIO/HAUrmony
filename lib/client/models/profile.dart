@@ -1,7 +1,7 @@
 class Profile {
   String name;
   String email;
-  String contact; // new contact field
+  String contact; 
   String initials;
 
   Profile({

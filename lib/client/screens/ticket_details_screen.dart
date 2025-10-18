@@ -56,8 +56,10 @@ class TicketDetailsScreen extends StatelessWidget {
                       Text('Venue', style: TextStyle(color: Colors.black54)),
                       const Text('Holy Angel University', style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
-                      // Text('Date & Time', style: TextStyle(color: Colors.black54)),
-                      // Text('${ticket.date}\n${ticket.time}', style: const TextStyle(fontWeight: FontWeight.bold)),
+
+                      Text('Queue Number: ', style: TextStyle(color: Colors.black54)),
+                      Text(ticket.queueNum.toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
+
                       const SizedBox(height: 10),
                       const Divider(),
                       const SizedBox(height: 8),

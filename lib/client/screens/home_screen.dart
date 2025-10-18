@@ -41,9 +41,26 @@ class HomeScreen extends StatelessWidget {
         .single()
         ;
 
+        final zoneQueue = 'zone_${fetchZone['zone'].toLowerCase()}_queue';
+
+        final saleID = await supabase
+        .from('sales')
+        .select('sale_id')
+        .eq('ticket_id', buyHistory[i]['ticket_id'])
+        .single()
+        ;
+
+        final queueNum = await supabase
+        .from(zoneQueue)
+        .select()
+        .eq('sale_id', saleID['sale_id'])
+        .single()
+        ;
+
         final Ticket ticket = Ticket(
         name: '${userInfo["first_name"]} ${userInfo["last_name"]}',
         section: 'ZONE ${fetchZone['zone']}',
+        queueNum: queueNum['queue_num'],
         );
 
         tickets.add(ticket);

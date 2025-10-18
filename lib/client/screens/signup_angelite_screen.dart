@@ -34,8 +34,8 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
   String? _hauEmailValidator(String? v) {
     if (v == null || v.trim().isEmpty) return 'Enter your HAU email';
     final email = v.trim();
-    final hauRegex = RegExp(r'^[\w\.\-]+@student\.hau\.edu\.ph$', caseSensitive: false);
-    if (!hauRegex.hasMatch(email)) return 'Email must be a valid @student.hau.edu.ph address';
+    final hauRegex = RegExp(r'^[\w\.\-]+(@student\.hau\.edu\.ph|@hau\.edu\.ph)$', caseSensitive: false);
+    if (!hauRegex.hasMatch(email)) return 'Email must be a valid HAU-affiliated email address';
     return null;
   }
 
@@ -53,6 +53,14 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
   String? _confirmPasswordValidator(String? v) {
     if (v == null || v.isEmpty) return 'Confirm password';
     if (v != passwordController.text) return 'Passwords do not match';
+    return null;
+  }
+
+  String? _studentNumberValidator(String? v) {
+    if (v == null || v.trim().isEmpty) return null;
+    final studNum = v.trim();
+    final studNumRegex = RegExp(r'^20[0-9]{6}$', caseSensitive: false);
+    if (!studNumRegex.hasMatch(studNum)) return 'Please enter a valid Student Number';
     return null;
   }
 
@@ -171,7 +179,7 @@ class _SignupAngeliteScreenState extends State<SignupAngeliteScreen> {
                     validator: _hauEmailValidator,
                   ),
                   const SizedBox(height: 12),
-                  TextFormField(controller: studentNumberController, decoration: const InputDecoration(labelText: 'Student Number')),
+                  TextFormField(controller: studentNumberController, decoration: const InputDecoration(labelText: '(Optional) Student Number'), validator: _studentNumberValidator,),
                   const SizedBox(height: 12),
                   TextFormField(controller: passwordController, obscureText: true, decoration: const InputDecoration(labelText: 'Password'), validator: _passwordValidator),
                   const SizedBox(height: 12),

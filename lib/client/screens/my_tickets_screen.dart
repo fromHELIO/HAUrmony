@@ -65,13 +65,6 @@ class MyTicketsScreen extends StatelessWidget {
                   style: const TextStyle(fontSize: 13, color: Colors.black87),
                 ),
                 const SizedBox(height: 6),
-
-                // Queue on its own line
-
-                //GET BACK TO THIS!
-                // Text(
-                //   t.queue,
-                //   style: const TextStyle(fontSize: 12, color: Colors.black54),
                 // ),
               ]),
             ),
